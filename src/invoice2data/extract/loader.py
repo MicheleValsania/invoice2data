@@ -151,3 +151,15 @@ def prepare_template(tpl: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     tpl.setdefault("priority", 5)
 
     return tpl
+
+def print_template_debug(tpl_content, filepath):
+   """Prints detailed debug information about a template."""
+   logger.debug("Template content: %s", tpl_content)
+   logger.debug("Template file: %s", filepath)
+   # Try to parse manually to get better error info
+   try:
+       from yaml import load, SafeLoader
+       tpl = load(tpl_content, Loader=SafeLoader)
+       logger.debug("Parsed template: %s", tpl)
+   except Exception as e:
+       logger.error("Failed to parse template: %s", e)

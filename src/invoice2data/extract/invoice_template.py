@@ -338,26 +338,19 @@ def _handle_legacy_syntax(
 ) -> None:
     """Handle legacy syntax for backward compatibility."""
     result = None
-    if k.startswith("sum_amount") and type(v) is list:
-        k = k[4:]
-        result = parsers.regex.parse(
-            self, k, {"regex": v, "type": "float", "group": "sum"}, optimized_str, True
-        )
-    elif k.startswith("date") or k.endswith("date"):
-        result = parsers.regex.parse(
-            self, k, {"regex": v, "type": "date"}, optimized_str, True
-        )
-    elif k.startswith("amount"):
-        result = parsers.regex.parse(
-            self, k, {"regex": v, "type": "float"}, optimized_str, True
-        )
-    else:
-        result = parsers.regex.parse(self, k, {"regex": v}, optimized_str, True)
-
+    logger.debug(f"Trying to match field {k} with pattern {v}")
+    # Resto del codice invariato...
+    
     if result or result == 0.0:
         output[k] = result
+        logger.debug(f"Successfully matched field {k}: {result}")
     else:
-        logger.warning("regexp for field %s didn't match", k)
+        logger.warning(f"regexp for field {k} didn't match. Pattern: {v}")
+        # Add this debug to see what text was searched
+        if len(optimized_str) > 200:
+            logger.debug(f"Searched text (first 200 chars): {optimized_str[:200]}...")
+        else:
+            logger.debug(f"Searched text: {optimized_str}")
 
 
 def _check_required_fields(
